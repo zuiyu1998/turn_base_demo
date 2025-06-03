@@ -1,3 +1,5 @@
+pub mod attribute_system;
+
 use bevy::prelude::*;
 
 pub struct GamePlugin;
