@@ -1,13 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Hash)]
 pub enum ModifierOperation {
     Absolute,
     Override,
     Percentage,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct AttributeModifier {
     pub source_uid: String,
     value: f32,
@@ -46,7 +46,7 @@ pub struct Attribute {
     /// 属性允许的最大值
     pub max_value: f32,
     /// 属性值是否可以为负
-    pub can_be_negative: f32,
+    pub can_be_negative: bool,
     /// 属性的基础值
     base_value: f32,
     /// 属性的当前值
@@ -55,6 +55,64 @@ pub struct Attribute {
 }
 
 impl Attribute {
+    pub fn remove_modifier(&mut self, value: &AttributeModifier) {
+        self.modifier_list.retain(|modifier| modifier == value);
+
+        self.recalculate_current_value();
+    }
+
+    pub fn add_modifier(&mut self, modifier: AttributeModifier) {
+        if !self.modifier_list.contains(&modifier) {
+            self.modifier_list.push(modifier);
+
+            self.recalculate_current_value();
+        }
+    }
+
+    pub fn set_base_value(&mut self, value: f32) {
+        self.base_value = value;
+        self.recalculate_current_value();
+    }
+
+    fn recalculate_current_value(&mut self) {
+        let mut absolute_modifier_list = vec![];
+        let mut percentage_modifier_list = vec![];
+        let mut override_modifier = None;
+
+        for modifier in self.modifier_list.iter() {
+            match modifier.operation {
+                ModifierOperation::Absolute => {
+                    absolute_modifier_list.push(modifier.clone());
+                }
+                ModifierOperation::Percentage => {
+                    percentage_modifier_list.push(modifier.clone());
+                }
+                ModifierOperation::Override => override_modifier = Some(modifier.clone()),
+            }
+        }
+
+        for modifier in absolute_modifier_list.iter() {
+            modifier.apply(self);
+        }
+
+        for modifier in percentage_modifier_list.iter() {
+            modifier.apply(self);
+        }
+
+        if let Some(modifier) = override_modifier {
+            modifier.apply(self);
+        }
+
+        let mut final_value = self.current_value;
+
+        if !self.can_be_negative && final_value < 0.0 {
+            final_value = 0.0
+        }
+
+        final_value = final_value.clamp(self.min_value, self.max_value);
+        self.current_value = final_value;
+    }
+
     pub fn get_base_value(&self) -> f32 {
         self.base_value
     }
