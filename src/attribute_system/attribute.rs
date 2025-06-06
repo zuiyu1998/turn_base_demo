@@ -121,3 +121,30 @@ impl Attribute {
         self.current_value
     }
 }
+
+//属性集合
+pub trait AttributeSet {
+    // 初始化属性之间的依赖
+    fn initialize_attribute_dependencies(&mut self) {}
+
+    // 单一属性更新之前的回调
+    fn before_base_value_change(&mut self, _attribute_name: &str, _old_v: f32, new_v: f32) -> f32 {
+        new_v
+    }
+
+    // 单一属性更新之后的回调
+    fn after_base_value_change(&mut self, _attribute_name: &str, _old_v: f32, _new_v: f32) {}
+
+    // 单一属性更新之前的回调
+    fn before_current_value_change(
+        &mut self,
+        _attribute_name: &str,
+        _old_v: f32,
+        new_v: f32,
+    ) -> f32 {
+        new_v
+    }
+
+    // 单一属性更新之后的回调
+    fn after_current_value_change(&mut self, _attribute_name: &str, _old_v: f32, _new_v: f32) {}
+}
