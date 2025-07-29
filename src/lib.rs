@@ -1,6 +1,8 @@
 mod attribute_system;
+mod skill_system;
 
 pub use attribute_system::*;
+pub use skill_system::*;
 
 use bevy::prelude::*;
 
