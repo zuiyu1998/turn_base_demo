@@ -26,6 +26,10 @@ pub trait AttributeSetComponent {
     fn update_attribute_current_value(&mut self, attribute_name: &str, value: f32) {
         let final_value = self.on_before_update_attribute_current_value(attribute_name, value);
 
+        if final_value == value {
+            return;
+        }
+
         let attribute_set = self.get_attribute_set_mut();
 
         if let Some(attribute) = attribute_set.get_mut(attribute_name) {
