@@ -10,7 +10,7 @@ use bevy::{
 pub struct AttributeSet(HashMap<String, Attribute>);
 
 ///描述属性之间的相互影响
-pub trait AttributeSetComponent {
+pub trait AttributeSetComponent: 'static + Sync + Send {
     fn get_attribute_set(&self) -> &AttributeSet;
 
     fn get_attribute_set_mut(&mut self) -> &mut AttributeSet;
