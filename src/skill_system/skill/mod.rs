@@ -2,8 +2,9 @@ mod processors;
 
 pub use processors::*;
 
-use crate::SkillAttributeSetComponent;
 use bevy::platform::collections::HashMap;
+
+use crate::AttributeSet;
 
 pub struct Skill {
     pub skill_name: String,
@@ -12,7 +13,7 @@ pub struct Skill {
 }
 
 pub struct SkillComponent {
-    pub attribute_set_component: Box<dyn SkillAttributeSetComponent>,
+    pub attribute_set: AttributeSet,
 }
 
 pub enum SkillError {}
