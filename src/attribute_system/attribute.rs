@@ -68,7 +68,7 @@ impl Attribute {
         }
     }
 
-    fn recalculate_current_value(&mut self) {
+    pub fn recalculate_current_value(&mut self) {
         self.current_value = self.base_value;
         let mut absolute_modifiers = vec![];
         let mut percentage_modifiers = vec![];

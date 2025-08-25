@@ -64,6 +64,7 @@ impl AttributeConstraintProcessor for MaxAttributeConstraintProcessor {
         value: f32,
         _constraint: &AttributeConstraint,
     ) {
+        attribute.recalculate_current_value();
         let cul_value = attribute.get_current_value();
         let value = cul_value.clamp(0.0, value);
         attribute.set_current_value(value);
@@ -76,12 +77,13 @@ impl AttributeConstraintProcessor for MaxAttributeConstraintProcessor {
         _constraint: &AttributeConstraint,
     ) -> f32 {
         let cul_value = attribute.get_current_value();
+
         value.min(cul_value)
     }
 }
 
 ///属性约束
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct AttributeConstraint {
     pub attribute_name: String,
     pub target_attribute_name: String,
