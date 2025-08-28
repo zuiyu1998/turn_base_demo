@@ -1,7 +1,3 @@
-mod processors;
-
-pub use processors::*;
-
 use bevy::platform::collections::HashMap;
 
 use crate::AttributeSet;
@@ -20,6 +16,19 @@ pub enum SkillError {}
 
 pub enum SkillProperty {
     Number(f32),
+    Bool(bool),
+}
+
+impl From<usize> for SkillProperty {
+    fn from(value: usize) -> Self {
+        Self::Number(value as f32)
+    }
+}
+
+impl From<bool> for SkillProperty {
+    fn from(value: bool) -> Self {
+        Self::Bool(value)
+    }
 }
 
 pub struct SkillEffect {
@@ -27,8 +36,21 @@ pub struct SkillEffect {
     pub payload: HashMap<String, SkillProperty>,
 }
 
+#[derive(Default)]
 pub struct SkillEffectResult {
-    pub payload: HashMap<String, SkillProperty>,
+    payload: HashMap<String, SkillProperty>,
+}
+
+impl SkillEffectResult {
+    pub fn set_value(&mut self, key: &str, value: impl Into<SkillProperty>) {
+        let value = value.into();
+
+        self.payload.insert(key.to_string(), value);
+    }
+
+    pub fn get_value(&self, key: &str) -> Option<&SkillProperty> {
+        self.payload.get(key)
+    }
 }
 
 #[derive(Default)]
@@ -91,10 +113,7 @@ impl Default for SkillEffectProcessorContainer {
 
 impl SkillEffectProcessorContainer {
     pub fn new() -> Self {
-        let mut container = Self::empty();
-        container.register_skill_effect_processor(DamageSkillEffectProcessor);
-
-        container
+        Self::empty()
     }
 
     pub fn empty() -> Self {

@@ -3,6 +3,9 @@ use crate::{Attribute, AttributeConstraint, AttributeSet};
 pub struct AttributeUtils;
 
 impl AttributeUtils {
+    pub const POWER: &'static str = "power";
+    pub const MAX_POWER: &'static str = "max_power";
+
     pub fn new_skill_attribute_set() -> AttributeSet {
         let mut set = AttributeSet::default();
 
