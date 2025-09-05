@@ -25,6 +25,11 @@ impl AttributeUtils {
             constraint_name: "max".to_string(),
         });
 
+        let mut defense = Attribute::default();
+        defense.attribute_name = "defense".to_string();
+        defense.set_base_value(30.0);
+        set.insert_attribute(defense);
+
         set
     }
 }

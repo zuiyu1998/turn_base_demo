@@ -1,7 +1,9 @@
 mod attribute_system;
+mod number_generator;
 mod skill_system;
 
 pub use attribute_system::*;
+pub use number_generator::*;
 pub use skill_system::*;
 
 use bevy::prelude::*;
